@@ -1,0 +1,752 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<link href="http://gmpg.org/xfn/11" rel="profile">
+	<meta http-equiv="content-type" content="text/html; charset=utf-8">
+	<link rel="canonical" href="http://jonasgebhardt.com/blog/react-phonecat" />
+	<meta name="description" content="“You can't trust the opinions of the others, because of the Blub paradox&#58;<br/> they're satisfied with whatever language they happen to use, because it dictates the way they think about programs.” —Paul Graham" />
+	<meta property="og:description" content="“You can't trust the opinions of the others, because of the Blub paradox&#58;<br/> they're satisfied with whatever language they happen to use, because it dictates the way they think about programs.” —Paul Graham" />
+	<meta itemprop="image" content="http://jonasgebhardt.com/media/2014-05-07-react-phonecat/forest.jpg" />
+	<meta property="og:image" content="http://jonasgebhardt.com/media/2014-05-07-react-phonecat/forest.jpg" />
+	<meta property="og:title" content="React PhoneCat: Rewriting the AngularJS Tutorial App in React" />
+	<meta property="og:type" content="article" />
+	<meta property="og:url" content="http://jonasgebhardt.com/blog/react-phonecat" />
+	<meta property="og:site_name" content="Jonas Gebhardt's Notes" />
+	<title>React PhoneCat: Rewriting the AngularJS Tutorial App in React &middot; Jonas Gebhardt's Notes</title>
+	<meta name="mobile-web-app-capable" content="yes">
+	<meta name="HandheldFriendly" content="True" />
+	<meta name="MobileOptimized" content="320" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<link rel="stylesheet" type="text/css" media="only screen and (min-width: 1001px)" href="/assets/css/desktop.css" />
+	<link rel="stylesheet" type="text/css" media="only screen and (max-width: 1000px)" href="/assets/css/mobile.css" />
+	<link href="/assets/css/genericons.css" type="text/css" rel="stylesheet" />
+	<link href="/assets/css/syntax.css" type="text/css" rel="stylesheet" />
+	<link rel="stylesheet" href="http://fonts.googleapis.com/css?family=PT+Serif:400,400italic,700|PT+Sans:400">
+	<link rel="apple-touch-icon" href="http://jonasgebhardt.com/assets/images/icon.png">
+	<link rel="shortcut icon" href="http://jonasgebhardt.com/assets/images/favicon.ico">
+	<link rel="alternate" type="application/rss+xml" title="RSS" href="http://jonasgebhardt.com/atom.xml">
+	<meta property="fb:app_id" content="696158740441372"/>
+	<meta property="fb:admins" content="jonas.gebhardt"/>
+</head>
+<body>
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) return;
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/en_GB/sdk.js#xfbml=1&appId=696158740441372&version=v2.0";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+
+<script>
+window.onload = function() {
+  FB.init({
+    appId      : '696158740441372',
+    status     : true,
+    xfbml      : true,
+    version    : 'v2.0',
+  });
+}
+  </script>
+
+	<header class="clean" style="background-image: url(/media/2014-05-07-react-phonecat/forest.jpg);height: 100%;">
+	
+	<label class="menu" for="_1">
+	<span class="genericon genericon-menu"></span>
+</label>
+<input id="_1" type="checkbox">
+<div class="menu-content">
+	<div class="menu" style="background-color: #777; z-index: -1;"></div>
+	
+	<a href="/">Home</a><br>
+	
+</div>
+<div class="social-links">
+	
+	<a href="https://twitter.com/jonasgebhardt" target="_blank" title="Follow me on twitter"><span class="genericon genericon-twitter"></span></a>
+	
+	<a href="https://github.com/jgebhardt" target="_blank" title="My projects on github"><span class="genericon genericon-github"></span></a>
+	
+	<a href="https://facebook.com/jonas.gebhardt" target="_blank" title="Follow me on Facebook"><span class="genericon genericon-facebook-alt"></span></a>
+	
+	<a href="https://instagram.com/jxg" target="_blank" title="Follow me on Instagram"><span class="genericon genericon-instagram"></span></a>
+	
+</div>
+	<div id="post-info">
+		<h1>React PhoneCat: Rewriting the AngularJS Tutorial App in React</h1>
+		
+			<h2>“You can't trust the opinions of the others, because of the Blub paradox&#58;<br/> they're satisfied with whatever language they happen to use, because it dictates the way they think about programs.” —Paul Graham</h2>
+		
+		<a class="site-title" href="http://jonasgebhardt.com"><img src="/assets/images/icon.png" class="site-icon-small">Jonas Gebhardt's Notes</a>, in 07 May 2014
+	</div>
+	<div id="nav-icon" style="bottom: 60px;">
+		<a class="scroll" data-speed="1000" href="#article"><span class="genericon genericon-expand"></span></a>
+	</div>
+</header>
+<div id="article">
+	<h1>React PhoneCat</h1>
+
+<h2>Re-writing the AngularJS tutorial in React</h2>
+
+<p>Aaron O’Connell of 42floors recently <a href="http://blog.42floors.com/coded-angular-tutorial-app-backbone-took-260-code/">documented his backbone-powered rewrite</a> of the <a href="https://docs.angularjs.org/tutorial">AngularJS PhoneCat tutorial</a>. While I don’t support the notion of using Lines Of Code as a metric of comparison (more on that later), I found his step-by-step walkthrough quite insightful. So, without further ado, here is my own walkthrough of rewriting Angular PhoneCat in React.</p>
+
+<h2>Walkthrough</h2>
+
+<h3>PhoneCat: What is it?</h3>
+
+<p>&quot;PhoneCat&quot; is a phone catalog, a client-side web app that displays a sortable, filterable list of phones. Each phone can be clicked to open up a page with details about that phone.</p>
+
+<div><img src="/media/2014-05-07-react-phonecat/phone-list-view.png" alt="View 1: List view" width="100%" />
+<blockquote style="border-left: 10px solid #D5D5D5;">View 1: List view</blockquote></div>
+
+<div><img src="/media/2014-05-07-react-phonecat/phone-detail-view.png" alt="View 2: Detail view" width="100%" />
+<blockquote style="border-left: 10px solid #D5D5D5;">View 2: Detail view</blockquote></div>
+
+<p>The CSS is copied 1:1 from the original example– Nothing fancy, but we won&#39;t dive into it too much here.</p>
+
+<hr>
+
+<h3>Step 1: Getting set up</h3>
+
+<p>Clone the git repository:</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">git clone https://github.com/jgebhardt/react-phonecat.git &amp;&amp; cd react-phonecat
+</code></pre></div>
+<p>Install dependencies via npm:</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">npm install
+</code></pre></div>
+<p>Finally, run the server:</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">npm run start
+</code></pre></div>
+<p>If you point your browser to <code>http://localhost:3000/</code>, you should now see a nice list of phones, circa 2011.</p>
+
+<hr>
+
+<h3>Step 2: Building a basic app on top of react-quickstart</h3>
+
+<p>In contrast to full-blown Model-View-Controller frameworks like Backbone or Angular, React is not as much an MVC framework as it is a set of view abstractions around the &quot;Virtual DOM&quot;. In React, you describe what you want your rendered output to look like based on the state of your application at any given point in time. React does not prescribe how you fetch data or do routing– These things are up to you, the developer. Package managers such as <a href="http://npmjs.org/">npm</a> usually provide modules for most of the common use cases.</p>
+
+<p>For the sake of getting started quickly and focusing on the actual React part of the application, I built this demo on top of Andrey Popp&#39;s <a href="https://github.com/andreypopp/react-quickstart">react-quickstart</a> project, which provides a basic React project, an express-powered file server, routing and some asynchronicity helpers. It also lets us use React&#39;s server rendering capabilities, but more on that later.</p>
+
+<p>Let&#39;s look at some code!</p>
+
+<p>Open the top-level component, <code>modules/App.js</code>. The react-quickstart project provides some helpful stuff that you won&#39;t necessarily find in &#39;vanilla&#39; React, but I&#39;ll try to not let that that confuse you too much.</p>
+
+<p>Let&#39;s go line by line:</p>
+<div class="highlight"><pre><code class="javascript language-javascript" data-lang="javascript"><span class="cm">/**</span>
+<span class="cm"> * @jsx React.DOM</span>
+<span class="cm"> */</span>
+</code></pre></div>
+<p>React ships with an optional syntax called JSX. It lets you specify React components in a way similar to HTML, but all JSX gets transformed into regular JavaScript before it is executed.</p>
+
+<p>For example, <code>&lt;div className=&quot;myClass&quot;&gt;hi&lt;/div&gt;</code> in JSX would be transformed to <code>React.DOM.div({className: &#39;myClass&#39;}, &#39;hi&#39;)</code>.</p>
+
+<p>You could easily write React components in plain JavaScript, but I personally prefer JSX. The <code>@jsx React.DOM</code> annotation tells the build system that this file should be transformed into plain JavaScript prior to bundling and running it.</p>
+<div class="highlight"><pre><code class="javascript language-javascript" data-lang="javascript"><span class="kd">var</span> <span class="nx">React</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;react&#39;</span><span class="p">);</span>
+<span class="kd">var</span> <span class="nx">ReactMount</span>  <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;react/lib/ReactMount&#39;</span><span class="p">);</span>
+<span class="kd">var</span> <span class="nx">ReactRouter</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;react-router-component&#39;</span><span class="p">);</span>
+
+<span class="kd">var</span> <span class="nx">Pages</span> <span class="o">=</span> <span class="nx">ReactRouter</span><span class="p">.</span><span class="nx">Pages</span><span class="p">;</span>
+<span class="kd">var</span> <span class="nx">Page</span> <span class="o">=</span> <span class="nx">ReactRouter</span><span class="p">.</span><span class="nx">Page</span><span class="p">;</span>
+<span class="kd">var</span> <span class="nx">NotFound</span> <span class="o">=</span> <span class="nx">ReactRouter</span><span class="p">.</span><span class="nx">NotFound</span><span class="p">;</span>
+</code></pre></div>
+<p>Here we are listing the App&#39;s main dependencies: Most importantly, React itself.
+<code>ReactRouter</code> is an <a href="http://andreypopp.viewdocs.io/react-router-component">external module by Andrey Popp</a> that is conveniently included in react-quickstart.</p>
+<div class="highlight"><pre><code class="javascript language-javascript" data-lang="javascript"><span class="kd">var</span> <span class="nx">NotFoundHandler</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;./NotFoundHandler&#39;</span><span class="p">);</span>
+<span class="kd">var</span> <span class="nx">PhonesPage</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;./PhonesPage&#39;</span><span class="p">);</span>
+<span class="kd">var</span> <span class="nx">PhonePage</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;./PhonePage&#39;</span><span class="p">);</span>
+</code></pre></div>
+<p>These are dependencies on component modules that the app will be using. The router will determine which of these components to display.</p>
+<div class="highlight"><pre><code class="javascript language-javascript" data-lang="javascript"><span class="nx">ReactMount</span><span class="p">.</span><span class="nx">allowFullPageRender</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
+</code></pre></div>
+<p>React can render just small part of any given site, or it can drive the entire page. This snippet allows React to do the latter.</p>
+<div class="highlight"><pre><code class="actionscript language-actionscript" data-lang="actionscript"><span class="k">var</span> <span class="nx">App</span> <span class="o">=</span> <span class="nx">React</span><span class="p">.</span><span class="nx">createClass</span><span class="p">({</span>
+
+  <span class="nx">render</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="p">(</span>
+      <span class="o">&lt;</span><span class="nx">html</span><span class="o">&gt;</span>
+        <span class="o">&lt;</span><span class="nx">head</span><span class="o">&gt;</span>
+          <span class="o">&lt;</span><span class="nx">link</span> <span class="nx">rel</span><span class="o">=</span><span class="s2">&quot;stylesheet&quot;</span> <span class="nx">href</span><span class="o">=</span><span class="s2">&quot;/assets/css/bootstrap.css&quot;</span> <span class="o">/&gt;</span>
+          <span class="o">&lt;</span><span class="nx">link</span> <span class="nx">rel</span><span class="o">=</span><span class="s2">&quot;stylesheet&quot;</span> <span class="nx">href</span><span class="o">=</span><span class="s2">&quot;/assets/css/app.css&quot;</span> <span class="o">/&gt;</span>
+          <span class="o">&lt;</span><span class="nx">link</span> <span class="nx">rel</span><span class="o">=</span><span class="s2">&quot;stylesheet&quot;</span> <span class="nx">href</span><span class="o">=</span><span class="s2">&quot;/assets/css/animations.css&quot;</span> <span class="o">/&gt;</span>
+          <span class="o">&lt;</span><span class="nx">script</span> <span class="nx">src</span><span class="o">=</span><span class="s2">&quot;/assets/bundle.js&quot;</span> <span class="o">/&gt;</span>
+        <span class="o">&lt;/</span><span class="nx">head</span><span class="o">&gt;</span>
+        <span class="o">&lt;</span><span class="nx">Pages</span>
+          <span class="nx">className</span><span class="o">=</span><span class="s2">&quot;App&quot;</span>
+          <span class="nx">path</span><span class="o">=</span><span class="p">{</span><span class="k">this</span><span class="p">.</span><span class="nx">props</span><span class="p">.</span><span class="nx">path</span><span class="p">}</span><span class="o">&gt;</span>
+          <span class="o">&lt;</span><span class="nx">Page</span> <span class="nx">path</span><span class="o">=</span><span class="s2">&quot;/&quot;</span> <span class="nx">handler</span><span class="o">=</span><span class="p">{</span><span class="nx">PhonesPage</span><span class="p">}</span> <span class="o">/&gt;</span>
+          <span class="o">&lt;</span><span class="nx">Page</span> <span class="nx">path</span><span class="o">=</span><span class="s2">&quot;/phones&quot;</span> <span class="nx">handler</span><span class="o">=</span><span class="p">{</span><span class="nx">PhonesPage</span><span class="p">}</span> <span class="o">/&gt;</span>
+          <span class="o">&lt;</span><span class="nx">Page</span> <span class="nx">path</span><span class="o">=</span><span class="s2">&quot;/phones/:phone&quot;</span> <span class="nx">handler</span><span class="o">=</span><span class="p">{</span><span class="nx">PhonePage</span><span class="p">}</span> <span class="o">/&gt;</span>
+          <span class="o">&lt;</span><span class="nx">NotFound</span> <span class="nx">handler</span><span class="o">=</span><span class="p">{</span><span class="nx">NotFoundHandler</span><span class="p">}</span> <span class="o">/&gt;</span>
+        <span class="o">&lt;/</span><span class="nx">Pages</span><span class="o">&gt;</span>
+      <span class="o">&lt;/</span><span class="nx">html</span><span class="o">&gt;</span>
+    <span class="p">);</span>
+  <span class="p">}</span>
+<span class="p">});</span>
+</code></pre></div>
+<p><code>React.createClass</code> is the constructor for any React component. Every React component needs to implement a <code>render</code> method that returns another valid React component. Note that in JSX, standard html primitives such as <code>&lt;html /&gt;</code>, <code>&lt;div /&gt;</code> or <code>&lt;a /&gt;</code> are React components, too! This is because React components render to something called the Virtual DOM instead of, well, the actual DOM. Simply speaking, the virtual DOM keeps track of where your render output changes and updates the real DOM only when a modification is needed. This abstraction is what gives React its great out-of-the-box performance. If you are interested in learning more about the diffing algorithm, check out <a href="http://calendar.perfplanet.com/2013/diff/">this very illustrative post</a> by <a href="https://twitter.com/vjeux">@vjeux</a>.</p>
+
+<p>The content of the <code>return</code> statement probably looks familiar: We&#39;re linking our CSS files and our JavaScript bundle into the <code>&lt;head&gt;</code> of the page, and the <code>Pages</code> component routes us to the correct <code>Page</code> based on the browser&#39;s current URL <code>path</code>.</p>
+<div class="highlight"><pre><code class="javascript language-javascript" data-lang="javascript"><span class="k">if</span> <span class="p">(</span><span class="k">typeof</span> <span class="nb">window</span> <span class="o">!==</span> <span class="s1">&#39;undefined&#39;</span><span class="p">)</span> <span class="p">{</span>
+  <span class="nb">window</span><span class="p">.</span><span class="nx">onload</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+    <span class="nx">React</span><span class="p">.</span><span class="nx">renderComponent</span><span class="p">(</span><span class="nx">App</span><span class="p">(),</span> <span class="nb">document</span><span class="p">);</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>Let&#39;s not get ahead of ourselves, but... we&#39;ll be using React&#39;s awesome server rendering capabilities later on to ship pre-rendered markup to the browser on initial page load. This piece simply tells React to take over the page&#39;s rendering once we are on the client.</p>
+
+<hr>
+
+<h3>Step 3: Pages for our routes</h3>
+
+<p>Great, we have our basic routes set up– Let&#39;s look at the pages for each of them.</p>
+<div class="highlight"><pre><code class="actionscript language-actionscript" data-lang="actionscript"><span class="k">var</span> <span class="nx">NotFoundHandler</span> <span class="o">=</span> <span class="nx">React</span><span class="p">.</span><span class="nx">createClass</span><span class="p">({</span>
+
+  <span class="nx">render</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="p">(</span>
+      <span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span><span class="nx">Page</span> <span class="nx">not</span> <span class="nx">found</span><span class="o">&lt;/</span><span class="nx">p</span><span class="o">&gt;</span>
+    <span class="p">);</span>
+  <span class="p">}</span>
+<span class="p">});</span>
+</code></pre></div>
+<p>First off, <code>NotFoundHandler</code>: A very basic React component. It simply renders a paragraph containing a string. This will be shown whenever <code>ReactRouter.Pages</code> does not find an exact match for the URL path.</p>
+
+<p>Next up, <code>PhonesPage</code>:</p>
+<div class="highlight"><pre><code class="actionscript language-actionscript" data-lang="actionscript"><span class="p">...</span>
+<span class="k">var</span> <span class="nx">ReactAsync</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;react-async&#39;</span><span class="p">);</span>
+<span class="k">var</span> <span class="nx">superagent</span>  <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;superagent&#39;</span><span class="p">);</span>
+<span class="k">var</span> <span class="nx">PhoneList</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;./PhoneList&#39;</span><span class="p">);</span>
+
+<span class="k">var</span> <span class="nx">PhonesPage</span> <span class="o">=</span> <span class="nx">React</span><span class="p">.</span><span class="nx">createClass</span><span class="p">({</span>
+  <span class="nx">mixins</span><span class="o">:</span> <span class="p">[</span><span class="nx">ReactAsync</span><span class="p">.</span><span class="nx">Mixin</span><span class="p">]</span><span class="o">,</span>
+
+  <span class="nx">getPhonesData</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">cb</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">superagent</span><span class="p">.</span><span class="kd">get</span><span class="p">(</span>
+      <span class="s1">&#39;http://localhost:3000/api/phones/&#39;</span><span class="o">,</span>
+      <span class="kd">function</span><span class="p">(</span><span class="nx">err</span><span class="o">,</span> <span class="nx">res</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nx">cb</span><span class="p">(</span><span class="nx">err</span><span class="o">,</span> <span class="nx">res</span> <span class="o">?</span> <span class="p">{</span><span class="nx">phones</span><span class="o">:</span> <span class="nx">res</span><span class="p">.</span><span class="nx">body</span><span class="p">}</span> <span class="o">:</span> <span class="kc">null</span><span class="p">);</span>
+      <span class="p">});</span>
+  <span class="p">}</span><span class="o">,</span>
+
+  <span class="nx">getInitialStateAsync</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">cb</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">getPhonesData</span><span class="p">(</span><span class="nx">cb</span><span class="p">);</span>
+  <span class="p">}</span><span class="o">,</span>
+
+  <span class="nx">render</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="o">&lt;</span><span class="nx">PhoneList</span> <span class="nx">phones</span><span class="o">=</span><span class="p">{</span><span class="k">this</span><span class="p">.</span><span class="nx">state</span><span class="p">.</span><span class="nx">phones</span><span class="p">}</span> <span class="o">/&gt;;</span>
+  <span class="p">}</span>
+<span class="p">});</span>
+</code></pre></div>
+<p>Similar to <code>ReactRouter</code>, <code>ReactAsync</code> is another <a href="http://andreypopp.viewdocs.io/react-async">external add-on</a> included in react-quickstart that allows components to fetch some of their state asynchronously. Stay with me– I realize that if you&#39;re new to React, this may not make much sense yet, but we&#39;ll get there.</p>
+
+<p>We already know that all React components render some output. This output is based on only two things: The component&#39;s <code>props</code> and <code>state</code> (both are optional).</p>
+
+<h4>State</h4>
+
+<p><code>state</code> is data that is stored inside a component. In traditional MVC framework lingo, &quot;state&quot; is often used synonymously with &quot;model&quot;. However, actual state includes more than just the underlying data model. Imagine a drop-down list component: The list items are part of the model&#39; state, the currently selected index is part of the model&#39;s state, but whether or not the drop-down is visible is state outside of the model. You can think of this &quot;UI state&quot; as basically anything you wouldn&#39;t bother persisting to the server. <em>The React Way&#x2122;</em> provides a convenient way to store both model and UI state where it matters most: inside the component.</p>
+
+<h4>Props</h4>
+
+<p>Alternatively, state (as well as any arbitrary data) can also be passed down from parent components via so-called <code>props</code>. For example, a hypothetical <code>Animal</code> component could take an <code>age</code> and a <code>name</code> prop, and its parent would instantiate it like this:</p>
+<div class="highlight"><pre><code class="actionscript language-actionscript" data-lang="actionscript"><span class="o">&lt;</span><span class="nx">Animal</span> <span class="nx">age</span><span class="o">=</span><span class="s2">&quot;4&quot;</span> <span class="nx">name</span><span class="o">=</span><span class="s2">&quot;fox&quot;</span> <span class="o">/&gt;</span>
+</code></pre></div>
+<h4>State or props?</h4>
+
+<p>If you are wondering whether <code>state</code> or <code>props</code> is the right place for your data, you may want to check out <a href="https://twitter.com/floydophone">Pete Hunt</a>&#39;s article <a href="http://facebook.github.io/react/blog/2013/11/05/thinking-in-react.html">Thinking in React</a>.</p>
+
+<p>Basically, this is what&#39;s happening in our <code>PhonesList</code> component:
+When the component is set up, <code>react-async</code> fetches JSON phone data from the server using <code>superagent</code>, which is a module for sending HTTP requests (basically a modular version of jQuery&#39;s <code>$.ajax</code>). The result of that API call is mixed into our <code>PhonesPage</code>&#39;s <code>state</code> and subsequently passed into a <code>PhoneList</code> component as a prop named <code>phones</code>.</p>
+
+<p>Lastly, the <code>PhonePage</code> component is very similar to <code>PhonesPage</code>, but instead of fetching and rendering a list of phones, it fetches detailed data for a single phone and displays it. We&#39;ll come back to this component later.</p>
+
+<hr>
+
+<h3>Step 4: PhoneList</h3>
+
+<p>Our phones data has been set up — it&#39;s UI building time! Let&#39;s take a look at a slightly simplified version of our PhoneList component:</p>
+<div class="highlight"><pre><code class="actionscript language-actionscript" data-lang="actionscript"><span class="k">var</span> <span class="nx">PhoneList</span> <span class="o">=</span> <span class="nx">React</span><span class="p">.</span><span class="nx">createClass</span><span class="p">({</span>
+
+  <span class="nx">render</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+    <span class="k">var</span> <span class="nx">phones</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">props</span><span class="p">.</span><span class="nx">phones</span><span class="p">.</span><span class="nx">map</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">phone</span><span class="o">,</span> <span class="nx">i</span><span class="p">){</span>
+      <span class="k">return</span> <span class="p">(</span>
+        <span class="o">&lt;</span><span class="nx">li</span> <span class="nx">className</span><span class="o">=</span><span class="s2">&quot;thumbnail phone-listing&quot;</span> <span class="nx">key</span><span class="o">=</span><span class="p">{</span><span class="nx">i</span><span class="p">}</span><span class="o">&gt;</span>
+          <span class="o">&lt;</span><span class="nx">Link</span> <span class="nx">href</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;/phones/&#39;</span> <span class="o">+</span> <span class="nx">phone</span><span class="p">.</span><span class="nx">id</span><span class="p">}</span> <span class="nx">className</span><span class="o">=</span><span class="s2">&quot;thumb&quot;</span><span class="o">&gt;</span>
+            <span class="o">&lt;</span><span class="nx">img</span> <span class="nx">src</span><span class="o">=</span><span class="p">{</span><span class="nx">STATIC_ROOT</span> <span class="o">+</span> <span class="nx">phone</span><span class="p">.</span><span class="nx">imageUrl</span><span class="p">}</span> <span class="o">/&gt;</span>
+          <span class="o">&lt;/</span><span class="nx">Link</span><span class="o">&gt;</span>
+          <span class="o">&lt;</span><span class="nx">Link</span> <span class="nx">href</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;/phones/&#39;</span> <span class="o">+</span> <span class="nx">phone</span><span class="p">.</span><span class="nx">id</span><span class="p">}</span><span class="o">&gt;</span><span class="p">{</span><span class="nx">phone</span><span class="p">.</span><span class="nx">name</span><span class="p">}</span><span class="o">&lt;/</span><span class="nx">Link</span><span class="o">&gt;</span>
+          <span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span><span class="p">{</span><span class="nx">phone</span><span class="p">.</span><span class="nx">snippet</span><span class="p">}</span><span class="o">&lt;/</span><span class="nx">p</span><span class="o">&gt;</span>
+        <span class="o">&lt;/</span><span class="nx">li</span><span class="o">&gt;</span>
+      <span class="p">);</span>
+    <span class="p">});</span>
+
+    <span class="k">return</span> <span class="p">(</span>
+      <span class="o">&lt;</span><span class="nx">div</span> <span class="nx">className</span><span class="o">=</span><span class="s2">&quot;container-fluid&quot;</span><span class="o">&gt;</span>
+        <span class="o">&lt;</span><span class="nx">div</span> <span class="nx">className</span><span class="o">=</span><span class="s2">&quot;row&quot;</span><span class="o">&gt;</span>
+          <span class="o">&lt;</span><span class="nx">div</span> <span class="nx">className</span><span class="o">=</span><span class="s2">&quot;col-md-2&quot;</span><span class="o">&gt;</span>
+            <span class="p">{</span><span class="cm">/* Sidebar content */</span><span class="p">}</span>
+            <span class="o">&lt;</span><span class="nx">div</span><span class="o">&gt;</span><span class="nx">Search</span><span class="o">:</span> <span class="o">&lt;</span><span class="nx">input</span> <span class="nx">value</span><span class="o">=</span><span class="s2">&quot;&quot;</span> <span class="sr">/&gt;&lt;/</span><span class="nx">div</span><span class="o">&gt;</span>
+            <span class="o">&lt;</span><span class="nx">div</span><span class="o">&gt;</span>
+              <span class="nx">Sort</span> <span class="nx">by</span><span class="o">:</span> <span class="o">&lt;</span><span class="nx">select</span><span class="o">&gt;</span>
+                <span class="o">&lt;</span><span class="nx">option</span> <span class="nx">value</span><span class="o">=</span><span class="s2">&quot;name&quot;</span><span class="o">&gt;</span><span class="nx">Alphabetical</span><span class="o">&lt;/</span><span class="nx">option</span><span class="o">&gt;</span>
+                <span class="o">&lt;</span><span class="nx">option</span> <span class="nx">value</span><span class="o">=</span><span class="s2">&quot;age&quot;</span><span class="o">&gt;</span><span class="nx">Newest</span><span class="o">&lt;/</span><span class="nx">option</span><span class="o">&gt;</span>
+              <span class="o">&lt;/</span><span class="nx">select</span><span class="o">&gt;</span>
+            <span class="o">&lt;/</span><span class="nx">div</span><span class="o">&gt;</span>
+          <span class="o">&lt;/</span><span class="nx">div</span><span class="o">&gt;</span>
+          <span class="o">&lt;</span><span class="nx">div</span> <span class="nx">className</span><span class="o">=</span><span class="s2">&quot;col-md-10&quot;</span><span class="o">&gt;</span>
+            <span class="p">{</span><span class="cm">/* Body content */</span><span class="p">}</span>
+            <span class="o">&lt;</span><span class="nx">ul</span> <span class="nx">className</span><span class="o">=</span><span class="s2">&quot;phones&quot;</span><span class="o">&gt;</span>
+              <span class="p">{</span><span class="nx">phones</span><span class="p">}</span>
+            <span class="o">&lt;/</span><span class="nx">ul</span><span class="o">&gt;</span>
+          <span class="o">&lt;/</span><span class="nx">div</span><span class="o">&gt;</span>
+        <span class="o">&lt;/</span><span class="nx">div</span><span class="o">&gt;</span>
+      <span class="o">&lt;/</span><span class="nx">div</span><span class="o">&gt;</span>
+    <span class="p">);</span>
+  <span class="p">}</span>
+<span class="p">});</span>
+</code></pre></div>
+<p>Inside <code>render</code>, we first create a list of rendered phone items.</p>
+
+<p>We iterate over the JSON data in <code>this.props.phones</code>, which looks like this...</p>
+<div class="highlight"><pre><code class="javascript language-javascript" data-lang="javascript"><span class="p">[</span>
+    <span class="p">{</span>
+        <span class="s2">&quot;age&quot;</span><span class="o">:</span> <span class="mi">0</span><span class="p">,</span>
+        <span class="s2">&quot;id&quot;</span><span class="o">:</span> <span class="s2">&quot;motorola-xoom-with-wi-fi&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;imageUrl&quot;</span><span class="o">:</span> <span class="s2">&quot;img/phones/motorola-xoom-with-wi-fi.0.jpg&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;name&quot;</span><span class="o">:</span> <span class="s2">&quot;Motorola XOOM\u2122 with Wi-Fi&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;snippet&quot;</span><span class="o">:</span> <span class="s2">&quot;The Next, Next Generation\r\n\r\nExperience the future with Motorola XOOM with Wi-Fi, the world&#39;s first tablet powered by Android 3.0 (Honeycomb).&quot;</span>
+    <span class="p">},</span>
+    <span class="p">{</span>
+        <span class="s2">&quot;age&quot;</span><span class="o">:</span> <span class="mi">1</span><span class="p">,</span>
+        <span class="s2">&quot;id&quot;</span><span class="o">:</span> <span class="s2">&quot;motorola-xoom&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;imageUrl&quot;</span><span class="o">:</span> <span class="s2">&quot;img/phones/motorola-xoom.0.jpg&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;name&quot;</span><span class="o">:</span> <span class="s2">&quot;MOTOROLA XOOM\u2122&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;snippet&quot;</span><span class="o">:</span> <span class="s2">&quot;The Next, Next Generation\n\nExperience the future with MOTOROLA XOOM, the world&#39;s first tablet powered by Android 3.0 (Honeycomb).&quot;</span>
+    <span class="p">},</span>
+    <span class="p">...</span>
+<span class="p">]</span>
+</code></pre></div>
+<p>...and render each data entry into a rendered list item:</p>
+<div class="highlight"><pre><code class="actionscript language-actionscript" data-lang="actionscript">  <span class="o">&lt;</span><span class="nx">li</span> <span class="nx">className</span><span class="o">=</span><span class="s2">&quot;thumbnail phone-listing&quot;</span> <span class="nx">key</span><span class="o">=</span><span class="p">{</span><span class="nx">i</span><span class="p">}</span><span class="o">&gt;</span>
+    <span class="o">&lt;</span><span class="nx">Link</span> <span class="nx">href</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;/phones/&#39;</span> <span class="o">+</span> <span class="nx">phone</span><span class="p">.</span><span class="nx">id</span><span class="p">}</span> <span class="nx">className</span><span class="o">=</span><span class="s2">&quot;thumb&quot;</span><span class="o">&gt;</span>
+      <span class="o">&lt;</span><span class="nx">img</span> <span class="nx">src</span><span class="o">=</span><span class="p">{</span><span class="nx">STATIC_ROOT</span> <span class="o">+</span> <span class="nx">phone</span><span class="p">.</span><span class="nx">imageUrl</span><span class="p">}</span> <span class="o">/&gt;</span>
+    <span class="o">&lt;/</span><span class="nx">Link</span><span class="o">&gt;</span>
+    <span class="o">&lt;</span><span class="nx">Link</span> <span class="nx">href</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;/phones/&#39;</span> <span class="o">+</span> <span class="nx">phone</span><span class="p">.</span><span class="nx">id</span><span class="p">}</span><span class="o">&gt;</span><span class="p">{</span><span class="nx">phone</span><span class="p">.</span><span class="nx">name</span><span class="p">}</span><span class="o">&lt;/</span><span class="nx">Link</span><span class="o">&gt;</span>
+    <span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span><span class="p">{</span><span class="nx">phone</span><span class="p">.</span><span class="nx">snippet</span><span class="p">}</span><span class="o">&lt;/</span><span class="nx">p</span><span class="o">&gt;</span>
+  <span class="o">&lt;/</span><span class="nx">li</span><span class="o">&gt;</span>
+</code></pre></div>
+<p>A few things to note:</p>
+
+<ul>
+<li><p>To specify a component&#39;s CSS class in React, you have to use <code>className</code> instead of <code>class</code>. This is because the JSX prop <code>class</code> would be turned into a JavaScript identifier named <code>class</code>– bad news, since <code>class</code> is a reserved word.</p></li>
+<li><p>Whenever you dynamically generate a list of React components (such as via <code>map</code>), you need to specify a unique <code>key</code> attribute for each item. The key can be anything, as long as it uniquely identifies the item within the list. <a href="http://facebook.github.io/react/docs/multiple-components.html#dynamic-children">React uses the key to figure out which items to update if the list changes</a>.</p></li>
+<li><p><code>Link</code> is a react-router-aware wrapper around regular anchor links– It ensures that the router client-side transitions to the linked content, rather than causing the browser to request a new page.</p></li>
+<li><p>To specify props in JSX, you can either pass a &quot;double-quoted string&quot; or embed any JavaScript expression inside {curly braces}:</p>
+
+<p><code>
+&lt;MyComponent myString=&quot;foo&quot; myNum={42} myObj={{foo: &#39;bar&#39;}} /&gt;
+</code></p></li>
+<li><p>JSX components without children do not need explicit closing tags– you can use single tags instead, e.g. <code>&lt;hr /&gt;</code></p></li>
+<li><p><code>STATIC_ROOT</code> is just a helper that contains a simple path prefix for static assets.</p></li>
+</ul>
+
+<h4>Side note on the Virtual DOM</h4>
+
+<p>Let&#39;s be clear– when we use e.g. <code>&lt;li&gt;</code> in JSX, we are not referring to an actual DOM element. Instead, we are calling <code>React.DOM.li</code>, which creates a basic component in React&#39;s virtual DOM. React will take this virtual <code>li</code> and <em>mount</em> it into the actual DOM. Subsequently, when the virtual <code>li</code> changes, React can compute the minimal set of changes that need to be applied to the actual DOM node. <strong>Herein lies the magic of React– Because the actual DOM is slow, &quot;diffing the tree&quot; yields a huge performance boost.</strong></p>
+
+<hr>
+
+<h3>Step 5: Storing input values and handling changes</h3>
+
+<p>Looking at the screenshot above, our phone list has two pieces of UI state: The current value of the &#39;search&#39; input, and whether to show the phone list sorted alphabetically or by age. We&#39;re going to store both values in the lists&#39; <code>state</code> object:</p>
+<div class="highlight"><pre><code class="actionscript language-actionscript" data-lang="actionscript">  <span class="nx">getInitialState</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="p">{</span>
+      <span class="nx">filterValue</span><span class="o">:</span> <span class="s1">&#39;&#39;</span><span class="o">,</span>
+      <span class="nx">sortBy</span><span class="o">:</span> <span class="s1">&#39;name&#39;</span>
+    <span class="p">};</span>
+  <span class="p">}</span><span class="o">,</span>
+</code></pre></div>
+<p>First, we initialize the component&#39;s <code>state</code> using <code>getInitialState</code>.</p>
+<div class="highlight"><pre><code class="actionscript language-actionscript" data-lang="actionscript">  <span class="nx">handleFilterChange</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">event</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">setState</span><span class="p">({</span>
+      <span class="nx">filterValue</span><span class="o">:</span> <span class="nx">event</span><span class="p">.</span><span class="nx">target</span><span class="p">.</span><span class="nx">value</span>
+    <span class="p">});</span>
+  <span class="p">}</span><span class="o">,</span>
+
+  <span class="nx">handleSelect</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">event</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">setState</span><span class="p">({</span>
+      <span class="nx">sortBy</span><span class="o">:</span> <span class="nx">event</span><span class="p">.</span><span class="nx">target</span><span class="p">.</span><span class="nx">selectedOptions</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="nx">value</span>
+    <span class="p">});</span>
+  <span class="p">}</span><span class="o">,</span>
+</code></pre></div>
+<p>Next, we add a change event handler for both of our input fields. When the user types into the filter input field, <code>handleFilterChange</code> will update the list&#39;s <code>state</code> with the new value. Simply put, a component gets re-rendered every time its <code>state</code> or <code>props</code> change, so the update will cause <code>render()</code> to be called soon after the state has been changed.</p>
+
+<p>Note that neither <code>setState</code> nor <code>render</code> are synchronous, as React may batch them together with other changes.</p>
+
+<p><strong>It&#39;s important to use <code>setState</code> for all state updates.</strong> If you modified <code>this.state</code> directly, React wouldn&#39;t know about the change and therefore not trigger a re-render.</p>
+<div class="highlight"><pre><code class="actionscript language-actionscript" data-lang="actionscript">  <span class="nx">render</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+    <span class="p">...</span>
+    <span class="o">&lt;</span><span class="nx">div</span><span class="o">&gt;</span>
+      <span class="nx">Search</span><span class="o">:</span>
+      <span class="o">&lt;</span><span class="nx">input</span> <span class="nx">value</span><span class="o">=</span><span class="p">{</span><span class="k">this</span><span class="p">.</span><span class="nx">state</span><span class="p">.</span><span class="nx">filterValue</span><span class="p">}</span> <span class="nx">onChange</span><span class="o">=</span><span class="p">{</span><span class="k">this</span><span class="p">.</span><span class="nx">handleFilterChange</span><span class="p">}</span> <span class="o">/&gt;</span>
+    <span class="o">&lt;/</span><span class="nx">div</span><span class="o">&gt;</span>
+    <span class="o">&lt;</span><span class="nx">div</span><span class="o">&gt;</span>
+      <span class="nx">Sort</span> <span class="nx">by</span><span class="o">:</span>
+      <span class="o">&lt;</span><span class="nx">select</span> <span class="nx">onChange</span><span class="o">=</span><span class="p">{</span><span class="k">this</span><span class="p">.</span><span class="nx">handleSelect</span><span class="p">}</span><span class="o">&gt;</span>
+        <span class="o">&lt;</span><span class="nx">option</span> <span class="nx">value</span><span class="o">=</span><span class="s2">&quot;name&quot;</span><span class="o">&gt;</span><span class="nx">Alphabetical</span><span class="o">&lt;/</span><span class="nx">option</span><span class="o">&gt;</span>
+        <span class="o">&lt;</span><span class="nx">option</span> <span class="nx">value</span><span class="o">=</span><span class="s2">&quot;age&quot;</span><span class="o">&gt;</span><span class="nx">Newest</span><span class="o">&lt;/</span><span class="nx">option</span><span class="o">&gt;</span>
+      <span class="o">&lt;/</span><span class="nx">select</span><span class="o">&gt;</span>
+    <span class="o">&lt;/</span><span class="nx">div</span><span class="o">&gt;</span>
+      <span class="p">...</span>
+    <span class="p">}</span>
+</code></pre></div>
+<p>Finally, we wire up our filter <code>input</code> to consume the value stored in <code>state</code> and wire up our change handlers for both inputs. To add event handlers, simply add a prop named after the respective event type. React will call the handler with a synthetic event object argument, taking care of any cross-browser differences. <a href="http://facebook.github.io/react/docs/events.html#supported-events">Here is the official list of supported events</a>.</p>
+
+<hr>
+
+<h3>Step 6: Sorting and Filtering</h3>
+
+<p>Now that we&#39;ve wired up our sort and filter inputs, we should figure out how to actually sort and filter our list of phones based on the list component&#39;s state.</p>
+<div class="highlight"><pre><code class="javascript language-javascript" data-lang="javascript"><span class="kd">function</span> <span class="nx">concatValues</span><span class="p">(</span><span class="nx">obj</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">return</span> <span class="nb">Object</span><span class="p">.</span><span class="nx">keys</span><span class="p">(</span><span class="nx">obj</span><span class="p">).</span><span class="nx">reduce</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">prev</span><span class="p">,</span> <span class="nx">key</span><span class="p">){</span>
+    <span class="kd">var</span> <span class="nx">val</span> <span class="o">=</span> <span class="nx">obj</span><span class="p">[</span><span class="nx">key</span><span class="p">];</span>
+    <span class="k">return</span> <span class="nx">prev</span> <span class="o">+</span> <span class="p">(</span><span class="k">typeof</span> <span class="nx">val</span> <span class="o">===</span> <span class="s1">&#39;object&#39;</span> <span class="o">?</span> <span class="nx">concatValues</span><span class="p">(</span><span class="nx">val</span><span class="p">)</span> <span class="o">:</span> <span class="nx">val</span><span class="p">);</span>
+  <span class="p">},</span> <span class="s1">&#39;&#39;</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>Firstly, I added a helper to allow full-text search of a phone&#39;s nested values. One could use the even hackier <code>JSON.stringify(phone)</code>, but the result would include key names.</p>
+<div class="highlight"><pre><code class="javascript language-javascript" data-lang="javascript"><span class="kd">function</span> <span class="nx">sortByAge</span><span class="p">(</span><span class="nx">a</span><span class="p">,</span> <span class="nx">b</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">return</span> <span class="nx">a</span><span class="p">.</span><span class="nx">age</span> <span class="o">-</span> <span class="nx">b</span><span class="p">.</span><span class="nx">age</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="kd">function</span> <span class="nx">sortByName</span><span class="p">(</span><span class="nx">a</span><span class="p">,</span> <span class="nx">b</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">return</span> <span class="nx">a</span><span class="p">.</span><span class="nx">name</span> <span class="o">&gt;</span> <span class="nx">b</span><span class="p">.</span><span class="nx">name</span>
+    <span class="o">?</span> <span class="mi">1</span>
+    <span class="o">:</span> <span class="nx">a</span><span class="p">.</span><span class="nx">name</span> <span class="o">&lt;</span> <span class="nx">b</span><span class="p">.</span><span class="nx">name</span>
+      <span class="o">?</span> <span class="o">-</span><span class="mi">1</span>
+      <span class="o">:</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>Secondly, I defined two comparators that we&#39;ll pass into JavaScript&#39;s <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/sort">plain old sort function</a>.</p>
+
+<p>All that&#39;s left to do then is to replace <code>{phones}</code> with a sorted, filtered copy:</p>
+<div class="highlight"><pre><code class="actionscript language-actionscript" data-lang="actionscript">  <span class="nx">render</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+    <span class="k">var</span> <span class="nx">sortByFunction</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">state</span><span class="p">.</span><span class="nx">sortBy</span> <span class="o">===</span> <span class="s1">&#39;age&#39;</span> <span class="o">?</span> <span class="nx">sortByAge</span> <span class="o">:</span> <span class="nx">sortByName</span><span class="o">;</span>
+    <span class="k">var</span> <span class="nx">filterValue</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">state</span><span class="p">.</span><span class="nx">filterValue</span><span class="o">;</span>
+    <span class="k">var</span> <span class="nx">filteredSortedPhones</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">props</span><span class="p">.</span><span class="nx">phones</span><span class="p">.</span><span class="nx">filter</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">phone</span><span class="p">)</span> <span class="p">{</span>
+      <span class="k">return</span> <span class="nx">concatValues</span><span class="p">(</span><span class="nx">phone</span><span class="p">).</span><span class="nx">toLowerCase</span><span class="p">().</span><span class="nx">indexOf</span><span class="p">(</span><span class="nx">filterValue</span><span class="p">.</span><span class="nx">toLowerCase</span><span class="p">())</span> <span class="o">!==</span> <span class="o">-</span><span class="mi">1</span><span class="o">;</span>
+    <span class="p">}).</span><span class="nx">sort</span><span class="p">(</span><span class="nx">sortByFunction</span><span class="p">).</span><span class="nx">map</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">phone</span><span class="o">,</span> <span class="nx">i</span><span class="p">)</span> <span class="p">{</span>
+      <span class="k">return</span> <span class="p">(</span>
+        <span class="o">&lt;</span><span class="nx">li</span> <span class="nx">className</span><span class="o">=</span><span class="s2">&quot;thumbnail phone-listing&quot;</span> <span class="nx">key</span><span class="o">=</span><span class="p">{</span><span class="nx">i</span><span class="p">}</span><span class="o">&gt;</span>
+          <span class="p">...</span>
+        <span class="o">&lt;/</span><span class="nx">li</span><span class="o">&gt;</span>
+      <span class="p">);</span>
+    <span class="p">});</span>
+
+    <span class="p">...</span>
+
+    <span class="o">&lt;</span><span class="nx">ul</span> <span class="nx">className</span><span class="o">=</span><span class="s2">&quot;phones&quot;</span><span class="o">&gt;</span>
+      <span class="p">{</span><span class="nx">filteredSortedPhones</span><span class="p">}</span>
+    <span class="o">&lt;/</span><span class="nx">ul</span><span class="o">&gt;</span>
+</code></pre></div>
+<p>In summary, we&#39;re using a series of array operators to manipulate our data in a functional style, which I personally find to be quite elegant.</p>
+
+<p>The resulting list of phones is a pure function of only the component&#39;s <code>state</code> and <code>props</code>.</p>
+
+<hr>
+
+<h3>Step 7: Filtering Animations</h3>
+
+<p>Even though React&#39;s core currently doesn&#39;t include a lot of animation support, we can make use of the CSSTransitionGroup add-on to animate (dis)appearing list items:</p>
+<div class="highlight"><pre><code class="actionscript language-actionscript" data-lang="actionscript"><span class="k">var</span> <span class="nx">ReactCSSTransitionGroup</span> <span class="o">=</span> <span class="nx">React</span><span class="p">.</span><span class="nx">addons</span><span class="p">.</span><span class="nx">CSSTransitionGroup</span><span class="o">;</span>
+
+<span class="p">...</span>
+
+  <span class="o">&lt;</span><span class="nx">ul</span> <span class="nx">className</span><span class="o">=</span><span class="s2">&quot;phones&quot;</span><span class="o">&gt;</span>
+    <span class="o">&lt;</span><span class="nx">ReactCSSTransitionGroup</span> <span class="nx">transitionName</span><span class="o">=</span><span class="s2">&quot;phone-listing&quot;</span><span class="o">&gt;</span>
+      <span class="p">{</span><span class="nx">filteredSortedPhones</span><span class="p">}</span>
+    <span class="o">&lt;/</span><span class="nx">ReactCSSTransitionGroup</span><span class="o">&gt;</span>
+  <span class="o">&lt;/</span><span class="nx">ul</span><span class="o">&gt;</span>
+</code></pre></div>
+<p>This will add CSS classes with <code>-enter</code>, <code>-leave</code> and <code>-active</code> suffixes to any given child element.
+All we need to do is add the adapted copy of Angular PhoneCat&#39;s <code>animations.css</code>:</p>
+<div class="highlight"><pre><code class="css language-css" data-lang="css"><span class="nc">.phone-listing-enter</span><span class="o">,</span>
+<span class="nc">.phone-listing-leave</span> <span class="p">{</span>
+  <span class="o">-</span><span class="n">webkit</span><span class="o">-</span><span class="n">transition</span><span class="o">:</span> <span class="m">0.5s</span> <span class="n">linear</span> <span class="n">all</span><span class="p">;</span>
+  <span class="o">-</span><span class="n">moz</span><span class="o">-</span><span class="n">transition</span><span class="o">:</span> <span class="m">0.5s</span> <span class="n">linear</span> <span class="n">all</span><span class="p">;</span>
+  <span class="o">-</span><span class="n">o</span><span class="o">-</span><span class="n">transition</span><span class="o">:</span> <span class="m">0.5s</span> <span class="n">linear</span> <span class="n">all</span><span class="p">;</span>
+  <span class="n">transition</span><span class="o">:</span> <span class="m">0.5s</span> <span class="n">linear</span> <span class="n">all</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="nc">.phone-listing-enter</span> <span class="p">{</span>
+  <span class="k">opacity</span><span class="o">:</span> <span class="m">0</span><span class="p">;</span>
+  <span class="k">height</span><span class="o">:</span> <span class="m">0</span><span class="p">;</span>
+  <span class="k">overflow</span><span class="o">:</span> <span class="k">hidden</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="nc">.phone-listing-enter.phone-listing-enter-active</span> <span class="p">{</span>
+  <span class="k">opacity</span><span class="o">:</span> <span class="m">1</span><span class="p">;</span>
+  <span class="k">height</span><span class="o">:</span> <span class="m">120px</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="nc">.phone-listing-leave</span> <span class="p">{</span>
+  <span class="k">opacity</span><span class="o">:</span> <span class="m">1</span><span class="p">;</span>
+  <span class="k">overflow</span><span class="o">:</span> <span class="k">hidden</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div>
+<hr>
+
+<h3>Step 8: PhonePage</h3>
+
+<p>Now that the phone list page is working, let&#39;s look at the <code>PhonePage</code> component, which shows details for a given phone.</p>
+
+<p><code>PhonePage</code> asynchronously fetches data for a given phone and stores it inside it&#39;s own <code>state</code>. The component then passes that data down to a <code>PhoneDetails</code> component via a <code>prop</code>.</p>
+
+<h4>Note: A component&#39;s lifecycle</h4>
+
+<p>Because our router component holds a reference to just one <code>PhonePage</code> component, that component needs to fetch the right data upon initialization and each time the selected phone changes. The router will parse the phone ID contained in the URL down to <code>PhonePage</code> as a prop, so we need to make sure to replace the phone data if the selected phone has changed.
+The React component API offers a set of <a href="facebook.github.io/react/docs/component-specs.html">lifecycle hooks</a> that allow us to perform work in certain critical places.</p>
+<div class="highlight"><pre><code class="javascript language-javascript" data-lang="javascript">  <span class="nx">componentWillReceiveProps</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">nextProps</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">props</span><span class="p">.</span><span class="nx">phone</span> <span class="o">!==</span> <span class="nx">nextProps</span><span class="p">.</span><span class="nx">phone</span><span class="p">)</span> <span class="p">{</span>
+      <span class="k">this</span><span class="p">.</span><span class="nx">getPhoneInfo</span><span class="p">(</span><span class="nx">nextProps</span><span class="p">.</span><span class="nx">phone</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">err</span><span class="p">,</span> <span class="nx">info</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">if</span> <span class="p">(</span><span class="nx">err</span><span class="p">)</span> <span class="p">{</span>
+          <span class="k">throw</span> <span class="nx">err</span><span class="p">;</span>
+        <span class="p">}</span>
+        <span class="k">this</span><span class="p">.</span><span class="nx">setState</span><span class="p">(</span><span class="nx">info</span><span class="p">);</span>
+      <span class="p">}.</span><span class="nx">bind</span><span class="p">(</span><span class="k">this</span><span class="p">));</span>
+    <span class="p">}</span>
+  <span class="p">},</span>
+</code></pre></div>
+<p>To re-fetch the data when the selected phone changes, I added a <code>componentWillReceiveProps</code> handler with a conditional on the <code>phone</code> prop. The handler will be called whenever the component&#39;s <code>props</code> are about to change, giving us the chance to compare the current <code>props</code> with <code>nextProps</code> and go back to the server when necessary.</p>
+
+<hr>
+
+<p><code>PhoneDetails</code> renders various values of the <code>phone</code> prop into markup, similar to <code>PhoneList</code>. There are two interesting parts that I&#39;d like to highlight.</p>
+
+<h4>The Checkmark component</h4>
+
+<p>I created a very simple <code>Checkmark</code> component that renders <code>✓</code> or  <code>✘</code> depending on a truthy <code>checked</code> prop:</p>
+<div class="highlight"><pre><code class="actionscript language-actionscript" data-lang="actionscript"><span class="k">var</span> <span class="nx">Checkmark</span> <span class="o">=</span> <span class="nx">React</span><span class="p">.</span><span class="nx">createClass</span><span class="p">({</span>
+
+  <span class="c1">// default value in case no props are specified</span>
+  <span class="c1">// optional, but good practice</span>
+  <span class="nx">getDefaultProps</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="p">{</span>
+      <span class="nx">checked</span><span class="o">:</span> <span class="kc">false</span>
+    <span class="p">};</span>
+  <span class="p">}</span><span class="o">,</span>
+
+  <span class="nx">render</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="o">&lt;</span><span class="nx">span</span><span class="o">&gt;</span><span class="p">{</span><span class="k">this</span><span class="p">.</span><span class="nx">props</span><span class="p">.</span><span class="nx">checked</span> <span class="o">?</span> <span class="s1">&#39;\u2713&#39;</span> <span class="o">:</span> <span class="s1">&#39;\u2718&#39;</span><span class="p">}</span><span class="o">&lt;/</span><span class="nx">span</span><span class="o">&gt;;</span>
+  <span class="p">}</span>
+<span class="p">});</span>
+</code></pre></div>
+<p><code>Checkmark</code> is a nice, compact example of how React components encourage code re-use through composition – to use it, simply pass a value to a Checkmark component:</p>
+<div class="highlight"><pre><code class="actionscript language-actionscript" data-lang="actionscript"><span class="o">&lt;</span><span class="nx">dd</span><span class="o">&gt;&lt;</span><span class="nx">Checkmark</span> <span class="nx">checked</span><span class="o">=</span><span class="p">{</span><span class="nx">phone</span><span class="p">.</span><span class="nx">connectivity</span><span class="p">.</span><span class="nx">infrared</span><span class="p">}</span> <span class="sr">/&gt;&lt;/</span><span class="nx">dd</span><span class="o">&gt;</span>
+</code></pre></div>
+<h4>Selecting the main image</h4>
+
+<p>When the user clicks on one of the thumbnail images, the main image should change accordingly. To do that, we&#39;ll store the URL of the currently selected image in <code>state</code> and initialize it with the URL of the phone&#39;s first image:</p>
+<div class="highlight"><pre><code class="javascript language-javascript" data-lang="javascript">  <span class="nx">getInitialState</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="p">{</span>
+      <span class="nx">activeImageURL</span><span class="o">:</span> <span class="k">this</span><span class="p">.</span><span class="nx">props</span><span class="p">.</span><span class="nx">phone</span> <span class="o">&amp;&amp;</span> <span class="p">(</span><span class="nx">STATIC_ROOT</span> <span class="o">+</span> <span class="k">this</span><span class="p">.</span><span class="nx">props</span><span class="p">.</span><span class="nx">phone</span><span class="p">.</span><span class="nx">images</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">||</span> <span class="s1">&#39;&#39;</span>
+    <span class="p">};</span>
+  <span class="p">},</span>
+</code></pre></div>
+<p>We then provide a click handler that takes the URL of the clicked image as an argument:</p>
+<div class="highlight"><pre><code class="javascript language-javascript" data-lang="javascript">  <span class="nx">handleThumbClick</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">activeURL</span><span class="p">,</span> <span class="nx">event</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">setState</span><span class="p">({</span>
+      <span class="nx">activeImageURL</span><span class="o">:</span> <span class="nx">activeURL</span>
+    <span class="p">});</span>
+  <span class="p">},</span>
+</code></pre></div>
+<p>For each thumb, we bind its URL to <code>handleThumbClick</code> and pass it into the <code>onClick</code> prop:</p>
+<div class="highlight"><pre><code class="actionscript language-actionscript" data-lang="actionscript">  <span class="k">var</span> <span class="nx">phoneThumbs</span> <span class="o">=</span> <span class="nx">phone</span><span class="p">.</span><span class="nx">images</span><span class="p">.</span><span class="nx">map</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">image</span><span class="o">,</span> <span class="nx">i</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">var</span> <span class="nx">imageURL</span> <span class="o">=</span> <span class="nx">STATIC_ROOT</span> <span class="o">+</span> <span class="nx">image</span><span class="o">;</span>
+    <span class="k">return</span> <span class="p">(</span>
+      <span class="o">&lt;</span><span class="nx">li</span> <span class="nx">key</span><span class="o">=</span><span class="p">{</span><span class="nx">i</span><span class="p">}</span> <span class="nx">onClick</span><span class="o">=</span><span class="p">{</span><span class="k">this</span><span class="p">.</span><span class="nx">handleThumbClick</span><span class="p">.</span><span class="nx">bind</span><span class="p">(</span><span class="k">this</span><span class="o">,</span> <span class="nx">imageURL</span><span class="p">)}</span><span class="o">&gt;</span>
+        <span class="o">&lt;</span><span class="nx">img</span> <span class="nx">src</span><span class="o">=</span><span class="p">{</span><span class="nx">imageURL</span><span class="p">}</span> <span class="o">/&gt;</span>
+      <span class="o">&lt;/</span><span class="nx">li</span><span class="o">&gt;</span>
+    <span class="p">);</span>
+  <span class="p">}.</span><span class="nx">bind</span><span class="p">(</span><span class="k">this</span><span class="p">));</span>
+</code></pre></div>
+<p>Rendering the main image is the easy part: <code>state</code> will always contain the URL of the currently selected image, so we can simply pass it in:</p>
+<div class="highlight"><pre><code class="actionscript language-actionscript" data-lang="actionscript">  <span class="p">...</span>
+  <span class="o">&lt;</span><span class="nx">div</span> <span class="nx">className</span><span class="o">=</span><span class="s2">&quot;phone-images&quot;</span><span class="o">&gt;</span>
+    <span class="o">&lt;</span><span class="nx">img</span> <span class="nx">className</span><span class="o">=</span><span class="s2">&quot;phone&quot;</span> <span class="nx">src</span><span class="o">=</span><span class="p">{</span><span class="k">this</span><span class="p">.</span><span class="nx">state</span><span class="p">.</span><span class="nx">activeImageURL</span><span class="p">}</span><span class="o">/&gt;</span>
+  <span class="o">&lt;/</span><span class="nx">div</span><span class="o">&gt;</span>
+  <span class="p">...</span>
+</code></pre></div>
+<p>Remember: <code>render</code> is automatically triggered whenever <code>props</code> or <code>state</code> have changed.</p>
+
+<hr>
+
+<h3>(tangential) Step 9: A basic phone API</h3>
+
+<p>So far we&#39;ve assumed that the server magically returns results to our AJAX calls.
+Instead of just requesting static JSON files, let&#39;s build a tiny phone API in express.</p>
+
+<p>Take a look at <code>server.js</code>:</p>
+<div class="highlight"><pre><code class="javascript language-javascript" data-lang="javascript"><span class="kd">function</span> <span class="nx">returnJSONFile</span><span class="p">(</span><span class="nx">req</span><span class="p">,</span> <span class="nx">res</span><span class="p">,</span> <span class="nx">filePath</span><span class="p">)</span> <span class="p">{</span>
+  <span class="nx">fs</span><span class="p">.</span><span class="nx">readFile</span><span class="p">(</span><span class="nx">filePath</span><span class="p">,</span> <span class="s1">&#39;utf8&#39;</span><span class="p">,</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">err</span><span class="p">,</span> <span class="nx">data</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nx">err</span><span class="p">)</span> <span class="p">{</span>
+      <span class="nx">res</span><span class="p">.</span><span class="nx">status</span><span class="p">(</span><span class="mi">404</span><span class="p">).</span><span class="nx">send</span><span class="p">(</span><span class="s1">&#39;Not found&#39;</span><span class="p">);</span>
+    <span class="p">}</span>
+    <span class="nx">data</span> <span class="o">=</span> <span class="nx">JSON</span><span class="p">.</span><span class="nx">parse</span><span class="p">(</span><span class="nx">data</span><span class="p">);</span>
+    <span class="nx">res</span><span class="p">.</span><span class="nx">send</span><span class="p">(</span><span class="nx">data</span><span class="p">);</span>
+  <span class="p">});</span>
+<span class="p">}</span>
+</code></pre></div>
+<p><code>returnJSONFile</code> reads a file and returns it to the client.</p>
+<div class="highlight"><pre><code class="javascript language-javascript" data-lang="javascript"><span class="kd">var</span> <span class="nx">api</span> <span class="o">=</span> <span class="nx">express</span><span class="p">()</span>
+  <span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">&#39;/phones/:phone&#39;</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">req</span><span class="p">,</span> <span class="nx">res</span><span class="p">)</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="nx">phone</span> <span class="o">=</span> <span class="nx">req</span><span class="p">.</span><span class="nx">params</span><span class="p">.</span><span class="nx">phone</span><span class="p">;</span>
+    <span class="kd">var</span> <span class="nx">path</span> <span class="o">=</span> <span class="s1">&#39;./data/phones/&#39;</span> <span class="o">+</span> <span class="nx">phone</span> <span class="o">+</span> <span class="s1">&#39;.json&#39;</span><span class="p">;</span>
+    <span class="nx">returnJSONFile</span><span class="p">(</span><span class="nx">req</span><span class="p">,</span> <span class="nx">res</span><span class="p">,</span> <span class="nx">path</span><span class="p">);</span>
+  <span class="p">})</span>
+  <span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">&#39;/phones&#39;</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">req</span><span class="p">,</span> <span class="nx">res</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">returnJSONFile</span><span class="p">(</span><span class="nx">req</span><span class="p">,</span> <span class="nx">res</span><span class="p">,</span> <span class="s1">&#39;./data/phones/phones.json&#39;</span><span class="p">);</span>
+  <span class="p">});</span>
+</code></pre></div>
+<p>Here we define a route for the list of phones and individual phone details, passing the correct path to <code>returnJSONFile</code>.</p>
+<div class="highlight"><pre><code class="javascript language-javascript" data-lang="javascript"><span class="kd">var</span> <span class="nx">app</span> <span class="o">=</span> <span class="nx">express</span><span class="p">();</span>
+
+<span class="nx">app</span>
+  <span class="p">.</span><span class="nx">use</span><span class="p">(</span><span class="s1">&#39;/assets&#39;</span><span class="p">,</span> <span class="nx">express</span><span class="p">.</span><span class="kr">static</span><span class="p">(</span><span class="nx">path</span><span class="p">.</span><span class="nx">join</span><span class="p">(</span><span class="nx">__dirname</span><span class="p">,</span> <span class="s1">&#39;assets&#39;</span><span class="p">)))</span>
+  <span class="p">.</span><span class="nx">use</span><span class="p">(</span><span class="nx">express</span><span class="p">.</span><span class="nx">favicon</span><span class="p">(</span><span class="s2">&quot;assets/img/favicon.ico&quot;</span><span class="p">))</span>
+  <span class="p">.</span><span class="nx">use</span><span class="p">(</span><span class="s1">&#39;/api&#39;</span><span class="p">,</span> <span class="nx">api</span><span class="p">)</span>
+  <span class="p">.</span><span class="nx">listen</span><span class="p">(</span><span class="mi">3000</span><span class="p">,</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">&#39;Point your browser at http://localhost:3000&#39;</span><span class="p">);</span>
+  <span class="p">});</span>
+</code></pre></div>
+<p>Finally, we configure and start the express app. It will serve images, CSS files and our bundled JavaScript file from the <code>/assets</code> directory, while the API responds to calls to <code>/api/phones/</code>.</p>
+
+<h3>Bonus Step 10: Server rendering</h3>
+
+<h4>Why server rendering?</h4>
+
+<p>Client-side web applications are great– They allow us to build snappy, highly interactive experiences. However, pure client-side apps face a few problems:</p>
+
+<ul>
+<li><p>Their content cannot be crawled and indexed by search engines, which is bad for SEO</p></li>
+<li><p>The app will be useless in browsers without JavaScript support</p></li>
+</ul>
+
+<p>For these reasons, pages are traditionally pre-rendered on the server using e.g. PHP, Ruby or Python. The client-side code then needs to be hooked up to pre-rendered content to provide interactivity. In many cases, this means that one needs to maintain several versions of code that does essentially the same thing.</p>
+
+<p>React provides a simple approach to this problem: It is an <em>isometric</em> JavaScript framework, which means that it can run the same exact view code on both the server and the client. The server will pre-render your page to html using React, then ship it down to the browser, where a client-side instance of React hooks itself into the markup and continues where the server left off. This makes the page searchable and, most importantly for your users, <em>time to interaction</em> is reduced significantly.</p>
+
+<h4>Server rendering in React</h4>
+
+<p>React provides multiple [methods for rendering components]. The most common one is <code>renderComponent</code>, which renders the component into the browser DOM:</p>
+<div class="highlight"><pre><code class="actionscript language-actionscript" data-lang="actionscript"><span class="nx">React</span><span class="p">.</span><span class="nx">renderComponent</span><span class="p">(</span><span class="o">&lt;</span><span class="nx">MyComponent</span> <span class="o">/&gt;,</span> <span class="nx">document</span><span class="p">.</span><span class="nx">body</span><span class="p">);</span>
+</code></pre></div>
+<p>To render a page on the server, we simply replace that call with <code>renderComponentToStaticMarkup</code>:</p>
+<div class="highlight"><pre><code class="actionscript language-actionscript" data-lang="actionscript"><span class="k">var</span> <span class="nx">markup</span> <span class="o">=</span> <span class="nx">renderComponentToStaticMarkup</span><span class="p">(</span><span class="nx">MyComponent</span><span class="p">);</span>
+</code></pre></div>
+<p>We send the result to the client, where <code>renderComponent</code> is subsequently called to continue rendering interactive updates to the page.</p>
+
+<p>Since <code>react-async</code> provides a render wrapper called <code>renderComponentToStringWithAsyncState</code> that returns when the asynchronous rendering has finished– That way the initial markup already contains the phone data that we&#39;d otherwise need to fetch via AJAX whenever the page os bootstrapped.</p>
+<div class="highlight"><pre><code class="javascript language-javascript" data-lang="javascript"><span class="kd">function</span> <span class="nx">renderApp</span><span class="p">(</span><span class="nx">req</span><span class="p">,</span> <span class="nx">res</span><span class="p">,</span> <span class="nx">next</span><span class="p">)</span> <span class="p">{</span>
+  <span class="kd">var</span> <span class="nx">path</span> <span class="o">=</span> <span class="nx">url</span><span class="p">.</span><span class="nx">parse</span><span class="p">(</span><span class="nx">req</span><span class="p">.</span><span class="nx">url</span><span class="p">).</span><span class="nx">pathname</span><span class="p">;</span>
+  <span class="kd">var</span> <span class="nx">app</span> <span class="o">=</span> <span class="nx">App</span><span class="p">({</span><span class="nx">path</span><span class="o">:</span> <span class="nx">path</span><span class="p">});</span>
+  <span class="nx">ReactAsync</span><span class="p">.</span><span class="nx">renderComponentToStringWithAsyncState</span><span class="p">(</span><span class="nx">app</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">err</span><span class="p">,</span> <span class="nx">markup</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nx">err</span><span class="p">)</span> <span class="p">{</span>
+      <span class="k">return</span> <span class="nx">next</span><span class="p">(</span><span class="nx">err</span><span class="p">);</span>
+    <span class="p">}</span>
+    <span class="nx">res</span><span class="p">.</span><span class="nx">send</span><span class="p">(</span><span class="nx">markup</span><span class="p">);</span>
+  <span class="p">});</span>
+<span class="p">}</span>
+
+<span class="p">...</span>
+
+<span class="kd">var</span> <span class="nx">app</span> <span class="o">=</span> <span class="nx">express</span><span class="p">()</span>
+  <span class="p">.</span><span class="nx">use</span><span class="p">(</span><span class="s1">&#39;/api&#39;</span><span class="p">,</span> <span class="nx">api</span><span class="p">)</span>
+  <span class="p">.</span><span class="nx">use</span><span class="p">(</span><span class="nx">renderApp</span><span class="p">)</span>
+  <span class="p">.</span><span class="nx">listen</span><span class="p">(</span><span class="mi">3000</span><span class="p">,</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">&#39;Point your browser at http://localhost:3000&#39;</span><span class="p">);</span>
+  <span class="p">});</span>
+</code></pre></div>
+<p>As you can see, enabling server-rendering is as trivial as adding a piece of express middleware.</p>
+
+<h2>Side note: “This framework vs. That framework”</h2>
+
+<h3>Lines of Code considered harmful</h3>
+
+<p>As some <a href="https://news.ycombinator.com/item?id=7599612">commenters on the original HN thread</a> have pointed out, Backbone is less opinionated than Angular, and the added flexibility comes at the expense of requiring more code to do the same thing for certain scenarios.</p>
+
+<p>The PhoneCat app was conceived specifically to teach and showcase Angular features– it&#39;s not surprising that a lot of the challenges of this specific application are solved in a few lines.</p>
+
+<p>Lines of Code are a notoriously bad proxy metric for developer productivity, product complexity etc. I invite the skeptics to study the corresponding <a href="http://en.wikipedia.org/wiki/Source_lines_of_code#Utility">Wikipedia article</a> for some pointers regarding the pros and cons of using LOCs.</p>
+
+<p>Just to show that I&#39;m not fabricating some sort of cop-out, I ran the numbers for both the Angular and React versions of PhoneCat using <a href="http://cloc.sourceforge.net/">cloc</a>:</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text"> ~/react-phonecat$ cloc --by-file modules
+       8 text files.
+       8 unique files.
+       0 files ignored.
+
+http://cloc.sourceforge.net v 1.60  T=0.03 s (284.2 files/s, 14851.6 lines/s)
+----------------------------------------------------------------------------------------
+File                                      blank        comment           code
+----------------------------------------------------------------------------------------
+modules/PhoneDetails.js                      12              3            146
+modules/PhoneList.js                         10              3             80
+modules/App.js                                8              3             38
+modules/PhonePage.js                          8              3             37
+modules/PhonesPage.js                         6              3             21
+modules/Checkmark.js                          5              3             12
+modules/NotFoundHandler.js                    4              3              9
+modules/StaticRoot.js                         0              0              1
+----------------------------------------------------------------------------------------
+SUM:                                         53             21            344
+----------------------------------------------------------------------------------------
+</code></pre></div>
+<p><em>Note: The Angular version simply serves static files, so I&#39;m not counting code in <code>server.js</code>.</em></p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">~/angular-phonecat$ cloc --by-file js partials
+       9 text files.
+       9 unique files.
+       1 file ignored.
+
+http://cloc.sourceforge.net v 1.60  T=0.03 s (279.8 files/s, 9110.1 lines/s)
+-----------------------------------------------------------------------------------
+File                                      blank        comment           code
+-----------------------------------------------------------------------------------
+partials/phone-detail.html                    4              0            114
+js/animations.js                              8              0             44
+js/app.js                                     4              1             23
+partials/phone-list.html                      4              2             22
+js/controllers.js                             5              1             16
+js/Checkmark.js                               6              3             12
+js/services.js                                3              1              8
+js/filters.js                                 2              1              6
+js/directives.js                              1              1              1
+-----------------------------------------------------------------------------------
+SUM:                                         37             10            246
+-----------------------------------------------------------------------------------
+</code></pre></div>
+<p>For the sake of fairness, I counted HTML templates / markup. In my opinion, they are as much part of the view as its corresponding &quot;View Controllers&quot;, and the markup specification for the virtual DOM forms the core of most React components.</p>
+
+<p>Our React version contains 40% more lines of code. I&#39;m certain that both the Angular and React versions could have been written more or less succinctly, but succinctness is a non-goal. For example, <code>Checkmark.js</code> is a 12-line wrapper around <code>condition ? ✓ : ✘</code>, but those 12 lines are easy to read, and they encapsulate the concept inside a React component, which makes it composable and infinitely re-usable.</p>
+
+<h4>Here&#39;s a rapidly brainstormed list of possibly superior criteria for JS framework selection</h4>
+
+<ul>
+<li>Learning curve: How high? How steep?</li>
+<li>Productivity: Both initially and over time</li>
+<li>Pre-existing developer familiarity with underlying concepts</li>
+<li>Ease of integration with tools and legacy systems</li>
+<li>Performance considerations</li>
+<li>Re-usability of client code</li>
+<li>Does it encourage high cohesion &amp; low coupling?</li>
+<li>Testability: Unit, Behavioral, Integration, Visual regressions testing</li>
+<li>Server rendering capabilities</li>
+<li>Maintenance burden</li>
+<li>API stability</li>
+</ul>
+
+<p>True to the introductory quote from Paul Graham&#39;s essay <a href="http://www.paulgraham.com/avg.html">Beating the Averages</a>, I invite you to not trust my word and go see for yourself. Give frameworks X, Y, Z and maybe even React a try. See what works best for you. I&#39;d love to hear how it went: I&#39;m <a href="https://twitter.com/jonasgebhardt">@jonasgebhardt</a> on twitter. You can also comment below.</p>
+
+	<div class="fb-comments" data-href="http://jgebhardt.github.io/blog/react-phonecat" data-width="700" data-numposts="50" data-colorscheme="light"></div>
+</div>
+
+<script src="/assets/js/smooth-scroll.js"></script>
+</body>
+</html>

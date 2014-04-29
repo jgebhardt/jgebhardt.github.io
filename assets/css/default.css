@@ -78,21 +78,12 @@ img {
 }
 
 #post-info h2 {
-	opacity: 0.75;
 	font-style: italic;
-	font-size: 24px;
+	font-size: 16px;
 	line-height: 24px;
-	text-align: justify;
-	font-weight: lighter;
-	margin: 15px 0px;
-}
-
-#post-info h2:before {
-	content: "“";
-}
-
-#post-info h2:after {
-	content: "”";
+	text-align: left;
+	font-weight: 200;
+	margin: 16px 0px 36px 0px;
 }
 
 #post-info h3 {
@@ -294,6 +285,10 @@ pre code {
 
 .clean a {
 	color: #eee;
+}
+
+.clean a .genericon {
+	color: #111;
 }
 
 .dark, .dark a {

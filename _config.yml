@@ -6,14 +6,14 @@ pygments:	true
 permalink:	/blog/:title
 
 # Setup
-title:		Thinny
-tagline:	'blog'
-description:	'My personal blog.'
-url:		http://camporez.com
+title:		Jonas Gebhardt's Notes
+tagline:	'People + Design + Technology'
+description:	'A blog.'
+url:		http://jonasgebhardt.com
 
 author:
-  name:		'Ian Camporez Brunelli'
-  url:		https://google.com/+IanCamporezBrunelli
+  name:		'Jonas Gebhardt'
+  url:		https://twitter.com/jonasgebhardt
 
 paginate:	5
 
@@ -23,30 +23,28 @@ cover:		/assets/images/cover.jpg
 
 social:
   - icon:	twitter
-    url:	https://twitter.com/iancamporez
+    url:	https://twitter.com/jonasgebhardt
     desc:	Follow me on twitter
 
   - icon:	github
-    url:	https://github.com/camporez
-    desc:	Fork me on github
+    url:	https://github.com/jgebhardt
+    desc:	My projects on github
 
-  - icon:	googleplus-alt
-    url:	https://google.com/+IanCamporezBrunelli
-    desc:	Add me on google+
+  - icon:	facebook-alt
+    url:	https://facebook.com/jonas.gebhardt
+    desc:	Follow me on Facebook
 
-  - icon:	feed
-    url:	http://camporez.com/atom.xml
-    desc:	Subscribe to my feed
-    
+  - icon: instagram
+    url:  https://instagram.com/jxg
+    desc: Follow me on Instagram
+
+
 menu:
   - title:	Home
     url:	/
-    
-  - title:	About
-    url:	/about
-    
+
 copyright:
-  author:	Camporez
-  url:		http://camporez.com
-  type_title:	Some rights reserved
-  type_url:	http://creativecommons.org/licenses/by-nc/2.5
+  author:	Jonas Gebhardt
+  url:		http://jonasgebhardt.com
+  type_title:	'Theme: Thinny 2.1 by Camporez'
+  type_url:	https://github.com/camporez/Thinny
