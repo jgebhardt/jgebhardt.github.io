@@ -29,7 +29,7 @@ The CSS is copied 1:1 from the original example– Nothing fancy, but we won't d
 
 ### Step 1: Getting set up
 
-Clone the git repository:
+Clone the [git repository](https://github.com/jgebhardt/react-phonecat.git):
 
 ```
 git clone https://github.com/jgebhardt/react-phonecat.git && cd react-phonecat

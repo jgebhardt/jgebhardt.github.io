@@ -4,7 +4,7 @@
  <title>Jonas Gebhardt's Notes</title>
  <link href="http://jonasgebhardt.com/atom.xml" rel="self"/>
  <link href="http://jonasgebhardt.com/"/>
- <updated>2014-05-07T10:34:36-07:00</updated>
+ <updated>2014-05-07T10:36:20-07:00</updated>
  <id>http://jonasgebhardt.com</id>
  <author>
    <name>Jonas Gebhardt</name>
@@ -41,7 +41,7 @@
 
 &lt;h3&gt;Step 1: Getting set up&lt;/h3&gt;
 
-&lt;p&gt;Clone the git repository:&lt;/p&gt;
+&lt;p&gt;Clone the &lt;a href=&quot;https://github.com/jgebhardt/react-phonecat.git&quot;&gt;git repository&lt;/a&gt;:&lt;/p&gt;
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;git clone https://github.com/jgebhardt/react-phonecat.git &amp;amp;&amp;amp; cd react-phonecat
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;Install dependencies via npm:&lt;/p&gt;
