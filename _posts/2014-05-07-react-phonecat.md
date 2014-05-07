@@ -546,7 +546,7 @@ When the user clicks on one of the thumbnail images, the main image should chang
 ```javascript
   getInitialState: function() {
     return {
-      activeImageURL: this.props.phone && (STATIC_ROOT + this.props.phone.images[0]) || ''
+      activeImageURL: this.props.phone ? (STATIC_ROOT + this.props.phone.images[0]) : ''
     };
   },
 ```
