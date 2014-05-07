@@ -4,7 +4,7 @@
  <title>Jonas Gebhardt's Notes</title>
  <link href="http://jonasgebhardt.com/atom.xml" rel="self"/>
  <link href="http://jonasgebhardt.com/"/>
- <updated>2014-05-07T11:21:58-07:00</updated>
+ <updated>2014-05-07T13:07:09-07:00</updated>
  <id>http://jonasgebhardt.com</id>
  <author>
    <name>Jonas Gebhardt</name>
@@ -565,7 +565,7 @@ Instead of just requesting static JSON files, let&amp;#39;s build a tiny phone A
 
 &lt;p&gt;For these reasons, pages are traditionally pre-rendered on the server using e.g. PHP, Ruby or Python. The client-side code then needs to be hooked up to pre-rendered content to provide interactivity. In many cases, this means that one needs to maintain several versions of code that does essentially the same thing.&lt;/p&gt;
 
-&lt;p&gt;React provides a simple approach to this problem: It is an &lt;em&gt;isometric&lt;/em&gt; JavaScript framework, which means that it can run the same exact view code on both the server and the client. The server will pre-render your page to html using React, then ship it down to the browser, where a client-side instance of React hooks itself into the markup and continues where the server left off. This makes the page searchable and, most importantly for your users, &lt;em&gt;time to interaction&lt;/em&gt; is reduced significantly.&lt;/p&gt;
+&lt;p&gt;React provides a simple approach to this problem: It is an &lt;em&gt;isomorphic&lt;/em&gt; JavaScript framework, which means that it can run the same exact view code on both the server and the client. The server will pre-render your page to html using React, then ship it down to the browser, where a client-side instance of React hooks itself into the markup and continues where the server left off. This makes the page searchable and, most importantly for your users, &lt;em&gt;time to interaction&lt;/em&gt; is reduced significantly.&lt;/p&gt;
 
 &lt;h4&gt;Server rendering in React&lt;/h4&gt;
 

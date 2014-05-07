@@ -632,7 +632,7 @@ Instead of just requesting static JSON files, let&#39;s build a tiny phone API i
 
 <p>For these reasons, pages are traditionally pre-rendered on the server using e.g. PHP, Ruby or Python. The client-side code then needs to be hooked up to pre-rendered content to provide interactivity. In many cases, this means that one needs to maintain several versions of code that does essentially the same thing.</p>
 
-<p>React provides a simple approach to this problem: It is an <em>isometric</em> JavaScript framework, which means that it can run the same exact view code on both the server and the client. The server will pre-render your page to html using React, then ship it down to the browser, where a client-side instance of React hooks itself into the markup and continues where the server left off. This makes the page searchable and, most importantly for your users, <em>time to interaction</em> is reduced significantly.</p>
+<p>React provides a simple approach to this problem: It is an <em>isomorphic</em> JavaScript framework, which means that it can run the same exact view code on both the server and the client. The server will pre-render your page to html using React, then ship it down to the browser, where a client-side instance of React hooks itself into the markup and continues where the server left off. This makes the page searchable and, most importantly for your users, <em>time to interaction</em> is reduced significantly.</p>
 
 <h4>Server rendering in React</h4>
 

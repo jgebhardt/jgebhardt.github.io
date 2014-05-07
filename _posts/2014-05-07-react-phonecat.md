@@ -646,7 +646,7 @@ Client-side web applications are great– They allow us to build snappy, highly 
 
 For these reasons, pages are traditionally pre-rendered on the server using e.g. PHP, Ruby or Python. The client-side code then needs to be hooked up to pre-rendered content to provide interactivity. In many cases, this means that one needs to maintain several versions of code that does essentially the same thing.
 
-React provides a simple approach to this problem: It is an _isometric_ JavaScript framework, which means that it can run the same exact view code on both the server and the client. The server will pre-render your page to html using React, then ship it down to the browser, where a client-side instance of React hooks itself into the markup and continues where the server left off. This makes the page searchable and, most importantly for your users, _time to interaction_ is reduced significantly.
+React provides a simple approach to this problem: It is an _isomorphic_ JavaScript framework, which means that it can run the same exact view code on both the server and the client. The server will pre-render your page to html using React, then ship it down to the browser, where a client-side instance of React hooks itself into the markup and continues where the server left off. This makes the page searchable and, most importantly for your users, _time to interaction_ is reduced significantly.
 
 #### Server rendering in React
 
